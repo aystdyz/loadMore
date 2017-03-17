@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>news list</title>
+<style>
+	body {
+		text-align: center;
+	}
+	#btn {
+		display: inline-block;
+		width:80px;
+		cursor: pointer;
+		font-size: 24px;
+	}
+	li {
+		margin: 5px 20px;
+		padding: 5px 10px;
+		list-style: none;
+		border: 1px solid #ccc;
+		border-radius: 3px;
+	}
+	li:hover {
+		background: #FCFD95;
+	}
+</style>
+</head>
+<body>
+  <ul id="ct"></ul>
+  <input type="button" name="load" id="btn" value="加载更多">
+  
+  <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script>
+    var btn = document.getElementById("btn")
+    var ct = document.getElementById("ct")
+    var currentIndex = 0
+    //var dataArrive = true
+    btn.addEventListener("click",function(e){
+    	/*if(dataArrave === false){
+			return;  //如果数据没有来，则直接return掉，否则执行else中的操作
+		}*/
+		
+		var xhr = new XMLHttpRequest()
+		xhr.onreadystatechange = function(){
+			if (xhr.readyState === 4) {
+				if(xhr.status === 200 || xhr.status === 304){
+    				var result = JSON.parse(xhr.responseText)
+    				var fragment = document.createDocumentFragment()
+    				for(var i=0; i<result.length; i++){
+    					var node = document.createElement("li")
+    					node.innerText = result[i]
+    					fragment.appendChild(node)
+    				}
+    				ct.appendChild(fragment)
+    				currentIndex += 5
+    			}
+				//dataArrive = true;  //数据来了以后，dataArrive状态变为true
+			}
+		}
+		xhr.open("get","/loadmore?index="+currentIndex+"&length=5",true)
+		xhr.send()
+		//dataArrive = false  //发送完请求之后dataArrive状态又变为false
+    })
+  </script>
+</body>
+</html>
